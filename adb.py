@@ -1,5 +1,12 @@
 import os
-from subprocess import check_output
+import subprocess
+from subprocess import check_output, call
+from datetime import datetime
+
+from serv import alive
+
+FFPLAY = "ffplay.exe"
+ADB = "adb.exe"
 
 
 class adb(object):
@@ -11,19 +18,24 @@ class adb(object):
 
     @staticmethod
     def screening(size=('480', '853'), udid=None):
-        adbcmd = "adb {0} exec-out screenrecord --bit-rate=16m  --output-format=h264 - | ".format(
+        adbcmd = "adb {0} exec-out \"while true;do screenrecord --bit-rate=16m  --output-format=h264 - ;done\" | ".format(
             "-s " + udid if udid else "")
-        print(adbcmd)
         playcmd = "ffplay -framerate 60 -framedrop -noinfbuf -analyzeduration 40000 -probesize 300000 " \
-                  "-x {0} -y {1} -an -window_title \"ACS:{2}\" -".format(size[0], size[1], adb.modelName(udid))
-        print(playcmd)
+                  "-x {0} -y {1} -an -window_title \"ARS: {2}\" -".format(size[0], size[1], adb.modelName(udid))
         cmd = adbcmd + playcmd
         print(cmd)
-        co = check_output("cmd /c " + cmd, timeout=10)
-        print(co)
-        # co = os.popen(cmd).readlines
-        if "Invalid data found when processing input" in str(co):
-            raise Exception("Device not connected")
+        ti = datetime.now()
+        # co = check_output("cmd /c " + cmd, timeout=30)
+        call("cmd /c " + cmd)
+        # co = subprocess.Popen("cmd /c " + cmd, stderr=subprocess.PIPE)
+        # co = co.stderr.readlines()[-1].strip().decode()
+        # print(co.strip().decode())
+        # print((datetime.now()-ti).seconds)
+        # if "Invalid data found when processing input" in co.strip().decode():
+        #     raise Exception("Device not connected or parameters invalid")
+        # while alive(FFPLAY):
+        #     # print('in')
+        #     continue
 
     @staticmethod
     def modelName(udid=None):
