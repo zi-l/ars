@@ -1,19 +1,17 @@
-import sys
-import os
-import time
 import tkinter as tk
-from tkinter import Frame
 from tkinter import font
-from _tkinter import TclError
-from adb import adb
+from serv import serv
+from adb import ADB, FFPLAY
 
 
 class Door(object):
+    kil = None
 
     def __init__(self):
         self.onclick = False
         self.root = tk.Tk()
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
+        self.root.protocol("WM_DELETE_WINDOW", self.close)
         # self.msgbox = tk.Label(self)
         # self.msgbox.pack(side="top")
         # self.timer = tk.Label(self, font=self.ft)
@@ -21,15 +19,18 @@ class Door(object):
         # self.frm = Frame(self.root)
         # self.frm.pack(side="bottom")
 
-    def shooting(self, **kwargs):
-        st = tk.Button(self.root, height=10, width=10, font=self.ft, **kwargs)
-        st.pack()
-        self.onclick = True if not self.onclick else False
+    def remote(self, **kwargs):
+        st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
+        st.pack(side="right")
+        # self.onclick = True if not self.onclick else False
 
-    # def stopShooting(self, **kwargs):
-    #     st = self.button(self.root, height=2, width=3, font=self.ft, **kwargs)
-    #     st.pack()
-    #     self.flag = 'stop'
+    def disconnect(self, **kwargs):
+        st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
+        st.pack(side="left")
 
-    def pop(self):
+    def close(self):
+        serv(ADB, FFPLAY).stop()
+        self.root.destroy()
+
+    def loop(self):
         self.root.mainloop()

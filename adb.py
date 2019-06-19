@@ -3,7 +3,7 @@ import subprocess
 from subprocess import check_output, call
 from datetime import datetime
 
-from serv import alive
+from serv import serv
 
 FFPLAY = "ffplay.exe"
 ADB = "adb.exe"
@@ -23,8 +23,8 @@ class adb(object):
         playcmd = "ffplay -framerate 60 -framedrop -noinfbuf -analyzeduration 40000 -probesize 300000 " \
                   "-x {0} -y {1} -an -window_title \"ARS: {2}\" -".format(size[0], size[1], adb.modelName(udid))
         cmd = adbcmd + playcmd
-        print(cmd)
-        ti = datetime.now()
+        # print(cmd)
+        # ti = datetime.now()
         # co = check_output("cmd /c " + cmd, timeout=30)
         call("cmd /c " + cmd)
         # co = subprocess.Popen("cmd /c " + cmd, stderr=subprocess.PIPE)
@@ -33,7 +33,7 @@ class adb(object):
         # print((datetime.now()-ti).seconds)
         # if "Invalid data found when processing input" in co.strip().decode():
         #     raise Exception("Device not connected or parameters invalid")
-        # while alive(FFPLAY):
+        # while serv.alive(FFPLAY):
         #     # print('in')
         #     continue
 
