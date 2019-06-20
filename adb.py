@@ -48,9 +48,9 @@ class adb(object):
         # co = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) # 出现无法开启的情况
         # co = co.stdout.readlines()[-1].strip().decode()
         # print(co.strip().decode())
-        if "Invalid data found when processing input" in co.strip().decode():
-            messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")
-            raise ConnectionAbortedError
+        # if "Invalid data found when processing input" in co.strip().decode():
+        #     messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")
+        #     raise ConnectionAbortedError
 
     @staticmethod
     def modelName(udid=None):

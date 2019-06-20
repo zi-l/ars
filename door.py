@@ -92,7 +92,7 @@ class Door(object):
             serv(FFPLAY, ADB).stop()
         elif self.iconRange['close']['xr'][0] <= self.x <= self.iconRange['close']['xr'][1] and \
                 self.iconRange['close']['yr'][0] <= self.y <= self.iconRange['close']['yr'][1]:
-            self.root.destroy()
+            self.close()
         elif self.iconRange['mini']['xr'][0] <= self.x <= self.iconRange['mini']['xr'][1] and \
                 self.iconRange['mini']['yr'][0] <= self.y <= self.iconRange['mini']['yr'][1]:
             self.root.wm_deiconify()
