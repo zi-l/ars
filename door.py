@@ -5,7 +5,6 @@ from adb import ADB, FFPLAY
 
 
 class Door(object):
-    kil = None
 
     def __init__(self):
         self.onclick = False
@@ -21,10 +20,14 @@ class Door(object):
 
     def remote(self, **kwargs):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
-        st.pack(side="right")
+        st.pack(side="left")
         # self.onclick = True if not self.onclick else False
 
     def disconnect(self, **kwargs):
+        st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
+        st.pack(side="left")
+
+    def killall(self, **kwargs):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
         st.pack(side="left")
 

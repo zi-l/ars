@@ -7,7 +7,8 @@ class serv(object):
         self.program = programs
 
     def alive(self, prog=None):
-        return True if os.popen("tasklist | findstr \"{0}\"".format(self.program if not prog else prog)).readline() else False
+        return True if os.popen(
+            "tasklist | findstr \"{0}\"".format(self.program if not prog else prog)).readline() else False
 
     def stop(self, *prog):
         if prog:
