@@ -1,27 +1,32 @@
+import os
 import tkinter as tk
+import tkinter
 from tkinter import font
 from serv import serv
 from adb import ADB, FFPLAY
 
+PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
+
 
 class Door(object):
+    x, y = 0, 0
+    sizeWidth = 100
+    sizeHeight = 40
+    icon_xy = 32
+    com_xy = 16
+    iconRange = dict()
 
-    def __init__(self):
-        self.onclick = False
-        self.root = tk.Tk()
+    def __init__(self, master=None, func=None):
+        self.func = func
+        self.root = tk.Tk() if not master else master
+        self.root.geometry("{0}x{1}+{2}+100".format(
+            self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
+        self.canvas = tk.Canvas(self.root)
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
-        self.root.protocol("WM_DELETE_WINDOW", self.close)
-        # self.msgbox = tk.Label(self)
-        # self.msgbox.pack(side="top")
-        # self.timer = tk.Label(self, font=self.ft)
-        # self.timer.pack()
-        # self.frm = Frame(self.root)
-        # self.frm.pack(side="bottom")
 
     def remote(self, **kwargs):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
         st.pack(side="left")
-        # self.onclick = True if not self.onclick else False
 
     def disconnect(self, **kwargs):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
@@ -31,9 +36,81 @@ class Door(object):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
         st.pack(side="left")
 
+    def create_canvas(self):
+        self.root.overrideredirect(True)
+        self.root.attributes("-alpha", 0.6)  # 窗口透明度30 %
+        self.canvas.configure(width=self.sizeWidth)
+        self.canvas.configure(height=self.sizeHeight)
+        self.canvas.configure(bg="black")
+        self.canvas.configure(highlightthickness=0)
+
+        self.image1 = tkinter.PhotoImage(file=PATH("static/start.png"))
+        self.canvas.create_image(self.sizeWidth - self.icon_xy / 2 - (self.sizeWidth - self.icon_xy * 3) / 3,
+                                 self.sizeHeight / 2,
+                                 anchor='center', image=self.image1)
+        self.iconRange['start'] = {"xr": (71, 94), "yr": (9, 31)}
+        self.image2 = tk.PhotoImage(file=PATH("static/stop.png"))
+        self.canvas.create_image(
+            self.sizeWidth - self.icon_xy / 2 - (self.sizeWidth - self.icon_xy * 3) / 3 - self.icon_xy,
+            self.sizeHeight / 2, anchor='center',
+            image=self.image2)
+        self.iconRange['stop'] = {"xr": (38, 63), "yr": (6, 31)}
+        self.image3 = tk.PhotoImage(file=PATH("static/kill.png"))
+        self.canvas.create_image(
+            self.sizeWidth - self.icon_xy / 2 - (self.sizeWidth - self.icon_xy * 3) / 3 - self.icon_xy * 2,
+            self.sizeHeight / 2, anchor='center',
+            image=self.image3)
+        self.iconRange['kill'] = {"xr": (7, 30), "yr": (6, 31)}
+        self.image4 = tk.PhotoImage(file=PATH("static/close.png"))
+        self.canvas.create_image(self.sizeWidth, 0, anchor='ne', image=self.image4)
+        self.iconRange['close'] = {"xr": (91, 100), "yr": (0, 8)}
+        # self.image5 = tk.PhotoImage(file=PATH("static/mini.png"))
+        # canvas.create_image(2, 0, anchor='nw', image=self.image5)
+        self.iconRange['mini'] = {"xr": (1, 11), "yr": (0, 4)}
+        self.canvas.pack()
+        self.canvas.bind("<B1-Motion>", self.move)
+        self.canvas.bind("<Button-1>", self.onclick)
+
+    def move(self, event):
+        new_x = (event.x - self.x) + self.root.winfo_x()
+        new_y = (event.y - self.y) + self.root.winfo_y()
+        s = "{0}x{1}+".format(self.sizeWidth, self.sizeHeight) + str(new_x) + "+" + str(new_y)
+        self.root.geometry(s)
+        # print("s = ", s)
+
+    def onclick(self, event):
+        self.x, self.y = event.x, event.y
+        # print("event.x, event.y = ", event.x, event.y)
+        if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
+                self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
+            self.func()
+        elif self.iconRange['stop']['xr'][0] <= self.x <= self.iconRange['stop']['xr'][1] and \
+                self.iconRange['stop']['yr'][0] <= self.y <= self.iconRange['stop']['yr'][1]:
+            serv(FFPLAY).stop()
+        elif self.iconRange['kill']['xr'][0] <= self.x <= self.iconRange['kill']['xr'][1] and \
+                self.iconRange['kill']['yr'][0] <= self.y <= self.iconRange['kill']['yr'][1]:
+            serv(FFPLAY, ADB).stop()
+        elif self.iconRange['close']['xr'][0] <= self.x <= self.iconRange['close']['xr'][1] and \
+                self.iconRange['close']['yr'][0] <= self.y <= self.iconRange['close']['yr'][1]:
+            self.root.destroy()
+        elif self.iconRange['mini']['xr'][0] <= self.x <= self.iconRange['mini']['xr'][1] and \
+                self.iconRange['mini']['yr'][0] <= self.y <= self.iconRange['mini']['yr'][1]:
+            self.root.wm_deiconify()
+
     def close(self):
         serv(ADB, FFPLAY).stop()
         self.root.destroy()
 
     def loop(self):
         self.root.mainloop()
+
+
+if __name__ == "__main__":
+    door = Door()
+    door.create_canvas()
+    door.loop()
+
+
+
+
+

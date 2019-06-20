@@ -16,6 +16,7 @@ def adb_required(func):
             messagebox.showerror(title="Error", message="adb not found")
             raise InterruptedError
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -39,14 +40,15 @@ class adb(object):
                   "-x {0} -y {1} -an {2} -window_title \"ARS: {3}\" -".format(size[0], size[1],
                                                                               "-noborder" if noborder else "",
                                                                               adb.modelName(udid))
-        cmd = "cmd /c " + adbcmd + playcmd  if sys.platform.startswith("win32") else adbcmd + playcmd
-        # print(cmd)
+
+        cmd = "cmd /c " + adbcmd + playcmd if sys.platform.startswith("win32") else adbcmd + playcmd
+        print(cmd)
         # co = check_output("cmd /c " + cmd)
-        # call("cmd /c " + cmd)
-        co = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        co = co.stdout.readlines()[-1].strip().decode()
+        call(cmd)
+        # co = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) # 出现无法开启的情况
+        # co = co.stdout.readlines()[-1].strip().decode()
         # print(co.strip().decode())
-        if "Invalid data found when processing input" in co:
+        if "Invalid data found when processing input" in co.strip().decode():
             messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")
             raise ConnectionAbortedError
 

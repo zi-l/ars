@@ -26,23 +26,8 @@ def run():
 
 
 if __name__ == "__main__":
-    # run()
-    door = Door()
-    door.root.wm_attributes('-topmost', 1)
-    door.root.geometry("10x37+{0}+100".format(door.root.winfo_screenwidth()-300))
-    door.root.title("ARS")
-    door.root.attributes("-alpha", 0.8)
-    # door.root.overrideredirect(True)  # 需要自定义位置
-    door.killall(
-        text="X", fg='green', bg='LightYellow',
-        # image=tk.PhotoImage(file=PATH("static/tkcolor.png")),
-        command=serv(FFPLAY, ADB).stop)
-    door.disconnect(
-        text="ll", bg='green',
-        # image=tk.PhotoImage(file=PATH("static/stop.png")),
-        command=serv(FFPLAY).stop)
-    door.remote(
-        text=">", bg='green',
-        # image=tk.PhotoImage(file=PATH("static/start.png")),
-        command=run)
+    door = Door(func=run)
+    door.create_canvas()
     door.loop()
+    # run()
+
