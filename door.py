@@ -1,4 +1,3 @@
-import os
 import tkinter as tk
 from tkinter import font
 from tkinter import messagebox
@@ -114,12 +113,6 @@ class Door(object):
 
     def loop(self):
         self.root.mainloop()
-
-
-if __name__ == "__main__":
-    door = Door()
-    door.create_canvas()
-    door.loop()
 
 
 
