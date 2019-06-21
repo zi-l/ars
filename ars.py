@@ -1,10 +1,8 @@
-import os
 import threading
-
+import multiprocessing
 from adb import adb
 from door import Door
-
-PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
+from config import msgbx
 
 
 def size():
@@ -12,7 +10,7 @@ def size():
     k = 350.0/float(srcsize[0])
     return srcsize if k >= 1 else ('350', str(int(float(srcsize[1])*k)))
 
-
+@msgbx
 def run():
     udid = adb.devices()[0]
     t1 = threading.Thread(target=adb.screening, kwargs=dict(size=size(), udid=udid, noborder=False))
@@ -20,7 +18,7 @@ def run():
 
 
 if __name__ == "__main__":
+    # multiprocessing.freeze_support()
     door = Door(func=dict(start=run))
-    door.create_canvas()
     door.loop()
 

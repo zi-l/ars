@@ -1,11 +1,10 @@
 import os
 import tkinter as tk
-import tkinter
 from tkinter import font
-from serv import serv, ADB, FFPLAY
+from tkinter import messagebox
 
-
-PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
+from serv import serv
+from config import ADB, FFPLAY, PATH
 
 
 class Door(object):
@@ -16,7 +15,7 @@ class Door(object):
     com_xy = 16
     iconRange = dict()
 
-    def __init__(self, master=None, func: dict = None):
+    def __init__(self, master=None, ui='canvas', func: dict = None):
         self.func = func
         self.root = tk.Tk() if not master else master
         self.root.resizable(0, 0)  # prevent from size changing
@@ -24,6 +23,9 @@ class Door(object):
             self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
         self.canvas = tk.Canvas(self.root)
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
+        self.ui = ui
+        if self.ui == 'canvas':
+            self.create_canvas()
 
     def remote(self, **kwargs):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
@@ -39,13 +41,13 @@ class Door(object):
 
     def create_canvas(self):
         self.root.overrideredirect(True)
-        self.root.attributes("-alpha", 0.6)  # 窗口透明度30 %
+        self.root.attributes("-alpha", 0.7)  # 窗口透明度30 %
         self.canvas.configure(width=self.sizeWidth)
         self.canvas.configure(height=self.sizeHeight)
         self.canvas.configure(bg="black")
         self.canvas.configure(highlightthickness=0)
 
-        self.image1 = tkinter.PhotoImage(file=PATH("static/start.png"))
+        self.image1 = tk.PhotoImage(file=PATH("static/start.png"))
         self.canvas.create_image(self.sizeWidth - self.icon_xy / 2 - (self.sizeWidth - self.icon_xy * 3) / 3,
                                  self.sizeHeight / 2,
                                  anchor='center', image=self.image1)
@@ -73,6 +75,7 @@ class Door(object):
         self.canvas.bind("<Button-1>", self.onclick)
 
     def move(self, event):
+        self.root.overrideredirect(True)
         new_x = (event.x - self.x) + self.root.winfo_x()
         new_y = (event.y - self.y) + self.root.winfo_y()
         self.root.geometry("{0}x{1}+".format(self.sizeWidth, self.sizeHeight) + str(new_x) + "+" + str(new_y))
@@ -82,16 +85,23 @@ class Door(object):
         # print("event.x, event.y = ", event.x, event.y)
         if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
                 self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
+            messagebox.showinfo(title="ARS", message="start screening")
             self.func["start"]()
         elif self.iconRange['stop']['xr'][0] <= self.x <= self.iconRange['stop']['xr'][1] and \
                 self.iconRange['stop']['yr'][0] <= self.y <= self.iconRange['stop']['yr'][1]:
-            serv(FFPLAY).stop()
+            if serv().alive(FFPLAY):
+                if messagebox.askquestion(title="ARS", message="stop screening?").lower() == 'yes':
+                    serv(FFPLAY).stop()
+            else:
+                messagebox.showinfo(title="ARS", message="No Screening running")
         elif self.iconRange['kill']['xr'][0] <= self.x <= self.iconRange['kill']['xr'][1] and \
                 self.iconRange['kill']['yr'][0] <= self.y <= self.iconRange['kill']['yr'][1]:
             serv(FFPLAY, ADB).stop()
+            messagebox.showinfo(title="ARS", message="All processes killed")
         elif self.iconRange['close']['xr'][0] <= self.x <= self.iconRange['close']['xr'][1] and \
                 self.iconRange['close']['yr'][0] <= self.y <= self.iconRange['close']['yr'][1]:
-            self.close()
+            if messagebox.askquestion(title="ARS", message="quit?").lower() == 'yes':
+                self.close()
         elif self.iconRange['mini']['xr'][0] <= self.x <= self.iconRange['mini']['xr'][1] and \
                 self.iconRange['mini']['yr'][0] <= self.y <= self.iconRange['mini']['yr'][1]:
             self.root.overrideredirect(False)

@@ -2,19 +2,9 @@ import os
 import sys
 import subprocess
 from subprocess import check_output, call
-from functools import wraps
 from tkinter import messagebox
 
-
-def adb_required(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if "Android Debug Bridge" not in os.popen("adb").readline():
-            messagebox.showerror(title="Error", message="adb not found")
-            raise InterruptedError
-        return func(*args, **kwargs)
-
-    return wrapper
+from config import msgbx, adb_required
 
 
 class adb(object):
@@ -30,6 +20,7 @@ class adb(object):
         return devs
 
     @staticmethod
+    @msgbx
     def screening(size=("320", "480"), udid=None, noborder=False):
         adbcmd = "adb {0} exec-out \"while true;do screenrecord --bit-rate=16m  --output-format=h264 - ;done\" | ".format(
             "-s " + udid if udid else "")
@@ -39,6 +30,7 @@ class adb(object):
                                                                               adb.modelName(udid))
 
         cmd = "cmd /c " + adbcmd + playcmd if sys.platform.startswith("win32") else adbcmd + playcmd
+        # print(cmd)
         call(cmd)
         # co = check_output("cmd /c " + cmd)
         # print(co.strip().decode())
