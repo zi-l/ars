@@ -1,6 +1,10 @@
 import os
 
 
+FFPLAY = "ffplay.exe"
+ADB = "adb.exe"
+
+
 class serv(object):
 
     def __init__(self, *programs):

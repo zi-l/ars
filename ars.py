@@ -1,10 +1,8 @@
 import os
 import threading
 
-from adb import adb, FFPLAY, ADB
-from serv import serv
+from adb import adb
 from door import Door
-import tkinter as tk
 
 PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
 
@@ -29,5 +27,4 @@ if __name__ == "__main__":
     door = Door(func=dict(start=run))
     door.create_canvas()
     door.loop()
-    # run()
 

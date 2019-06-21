@@ -2,8 +2,8 @@ import os
 import tkinter as tk
 import tkinter
 from tkinter import font
-from serv import serv
-from adb import ADB, FFPLAY
+from serv import serv, ADB, FFPLAY
+
 
 PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
 

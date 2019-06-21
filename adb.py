@@ -5,9 +5,6 @@ from subprocess import check_output, call
 from functools import wraps
 from tkinter import messagebox
 
-FFPLAY = "ffplay.exe"
-ADB = "adb.exe"
-
 
 def adb_required(func):
     @wraps(func)
@@ -42,11 +39,8 @@ class adb(object):
                                                                               adb.modelName(udid))
 
         cmd = "cmd /c " + adbcmd + playcmd if sys.platform.startswith("win32") else adbcmd + playcmd
-        print(cmd)
-        # co = check_output("cmd /c " + cmd)
         call(cmd)
-        # co = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) # 出现无法开启的情况
-        # co = co.stdout.readlines()[-1].strip().decode()
+        # co = check_output("cmd /c " + cmd)
         # print(co.strip().decode())
         # if "Invalid data found when processing input" in co.strip().decode():
         #     messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")
@@ -88,5 +82,5 @@ class adb(object):
             " -s " + udid if udid else "",
             "mResumedActivity" if int(
                 adb.androidVersion(udid if udid else None).split(".")[0]) >= 8 else "mFocusedActivity")
-        line = os.popen(adbcmd).readline().split()[-2].split("/")
-        return line[0], line[1]
+        pkat = os.popen(adbcmd).readline().split()[-2].split("/")
+        return pkat[0], pkat[1]
