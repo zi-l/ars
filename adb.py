@@ -1,7 +1,7 @@
 import os
 import sys
-import subprocess
-from subprocess import check_output, call
+# import subprocess
+# from subprocess import check_output, call
 from tkinter import messagebox
 
 from config import msgbx, adb_required
@@ -31,7 +31,10 @@ class adb(object):
 
         cmd = "cmd /c " + adbcmd + playcmd if sys.platform.startswith("win32") else adbcmd + playcmd
         # print(cmd)
-        call(cmd)
+        # call(cmd)
+        os.popen(cmd)
+        # check_output(cmd)
+        # subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # co = check_output("cmd /c " + cmd)
         # print(co.strip().decode())
         # if "Invalid data found when processing input" in co.strip().decode():
