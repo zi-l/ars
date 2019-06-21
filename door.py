@@ -75,13 +75,11 @@ class Door(object):
     def move(self, event):
         new_x = (event.x - self.x) + self.root.winfo_x()
         new_y = (event.y - self.y) + self.root.winfo_y()
-        s = "{0}x{1}+".format(self.sizeWidth, self.sizeHeight) + str(new_x) + "+" + str(new_y)
-        self.root.geometry(s)
-        # print("s = ", s)
+        self.root.geometry("{0}x{1}+".format(self.sizeWidth, self.sizeHeight) + str(new_x) + "+" + str(new_y))
 
     def onclick(self, event):
         self.x, self.y = event.x, event.y
-        print("event.x, event.y = ", event.x, event.y)
+        # print("event.x, event.y = ", event.x, event.y)
         if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
                 self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
             self.func["start"]()

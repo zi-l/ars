@@ -7,19 +7,15 @@ from door import Door
 PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
 
 
-def dpsize():
+def size():
     srcsize = adb.screenSize()
     k = 350.0/float(srcsize[0])
     return srcsize if k >= 1 else ('350', str(int(float(srcsize[1])*k)))
 
 
-def shoot():
-    udid = adb.devices()[0]
-    adb.screening(size=dpsize(), udid=udid, noborder=False)
-
-
 def run():
-    t1 = threading.Thread(target=shoot)
+    udid = adb.devices()[0]
+    t1 = threading.Thread(target=adb.screening, kwargs=dict(size=size(), udid=udid, noborder=False))
     t1.start()
 
 
