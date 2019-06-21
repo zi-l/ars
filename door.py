@@ -16,9 +16,10 @@ class Door(object):
     com_xy = 16
     iconRange = dict()
 
-    def __init__(self, master=None, func=None):
+    def __init__(self, master=None, func: dict = None):
         self.func = func
         self.root = tk.Tk() if not master else master
+        self.root.resizable(0, 0)  # prevent from size changing
         self.root.geometry("{0}x{1}+{2}+100".format(
             self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
         self.canvas = tk.Canvas(self.root)
@@ -64,8 +65,8 @@ class Door(object):
         self.image4 = tk.PhotoImage(file=PATH("static/close.png"))
         self.canvas.create_image(self.sizeWidth, 0, anchor='ne', image=self.image4)
         self.iconRange['close'] = {"xr": (91, 100), "yr": (0, 8)}
-        # self.image5 = tk.PhotoImage(file=PATH("static/mini.png"))
-        # canvas.create_image(2, 0, anchor='nw', image=self.image5)
+        self.image5 = tk.PhotoImage(file=PATH("static/mini.png"))
+        self.canvas.create_image(2, 0, anchor='nw', image=self.image5)
         self.iconRange['mini'] = {"xr": (1, 11), "yr": (0, 4)}
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
@@ -80,10 +81,10 @@ class Door(object):
 
     def onclick(self, event):
         self.x, self.y = event.x, event.y
-        # print("event.x, event.y = ", event.x, event.y)
+        print("event.x, event.y = ", event.x, event.y)
         if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
                 self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
-            self.func()
+            self.func["start"]()
         elif self.iconRange['stop']['xr'][0] <= self.x <= self.iconRange['stop']['xr'][1] and \
                 self.iconRange['stop']['yr'][0] <= self.y <= self.iconRange['stop']['yr'][1]:
             serv(FFPLAY).stop()
@@ -95,7 +96,9 @@ class Door(object):
             self.close()
         elif self.iconRange['mini']['xr'][0] <= self.x <= self.iconRange['mini']['xr'][1] and \
                 self.iconRange['mini']['yr'][0] <= self.y <= self.iconRange['mini']['yr'][1]:
-            self.root.wm_deiconify()
+            self.root.overrideredirect(False)
+            self.root.iconify()
+            self.root.overrideredirect(True)
 
     def close(self):
         serv(ADB, FFPLAY).stop()

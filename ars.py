@@ -26,7 +26,7 @@ def run():
 
 
 if __name__ == "__main__":
-    door = Door(func=run)
+    door = Door(func=dict(start=run))
     door.create_canvas()
     door.loop()
     # run()
