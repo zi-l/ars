@@ -8,9 +8,9 @@ class serv(object):
         self.program = programs
 
     @msgbx
-    def alive(self, prog=None):
+    def alive(self, prog):
         return True if os.popen(
-            "tasklist | findstr \"{0}\"".format(self.program if not prog else prog)).readline() else False
+            "tasklist | findstr \"{0}\"".format(prog)).readline() else False
 
     @msgbx
     def stop(self, *prog):

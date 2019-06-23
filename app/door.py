@@ -2,14 +2,16 @@ import tkinter as tk
 from tkinter import font
 from tkinter import messagebox
 
-from serv import serv
+from app.serv import serv
 from config import ADB, FFPLAY, PATH
-# from ars import run
 
 
 class Door(object):
     x, y = 0, 0
     icon_sq = {
+        1: "start",
+        2: "stop",
+        3: "kill",
         "start": 1,
         "stop": 2,
         "kill": 3,
@@ -18,7 +20,7 @@ class Door(object):
     sizeHeight = 40
     iconSize = 32
     miniSize = 10
-    iconTs = 5
+    iconRevise = 5
     iconRange = dict()
 
     def __init__(self, master=None, ui='canvas', func: dict = None):
@@ -53,45 +55,47 @@ class Door(object):
         self.canvas.configure(bg="black")
         self.canvas.configure(highlightthickness=0)
         self.attachImage(self.canvas)
+        self.root.iconbitmap(PATH("static/handshake.ico"))  # placed here instead of __init__()
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
         self.canvas.bind("<Button-1>", self.onclick)
 
     def attachImage(self, canvas):
-        icon_amount = 3
+        icon_amount = len(self.icon_sq.keys())/2
         # distance between each icon
         xd = (self.sizeWidth - self.iconSize * icon_amount) / (icon_amount + 1)
         yd = (self.sizeHeight - self.iconSize) / 2  # distance to the top
 
-        self.image4 = tk.PhotoImage(file=PATH("static/close.png"))
-        canvas.create_image(self.sizeWidth, 0, anchor='ne', image=self.image4)
+        self.imageClose = tk.PhotoImage(file=PATH("static/close.png"))
+        canvas.create_image(self.sizeWidth, 0, anchor='ne', image=self.imageClose)
         self.iconRange['close'] = {"xr": (self.sizeWidth - self.miniSize + 1, self.sizeWidth),
                                    "yr": (0, self.miniSize - 1)}
 
-        self.image1 = tk.PhotoImage(file=PATH("static/start.png"))
-        canvas.create_image(self.sizeWidth - self.iconSize / 2 - xd,
+        self.image1 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[1])))
+        canvas.create_image(self.sizeWidth - self.iconSize/2 - xd*self.icon_sq[self.icon_sq[1]],
                             self.sizeHeight / 2, anchor='center', image=self.image1)
-        # self.iconRange['start'] = {"xr": (71, 94), "yr": (9, 31)}
-        self.iconRange['start'] = {
-            "xr": (self.sizeWidth - xd - self.iconSize + self.iconTs, self.sizeWidth - xd),
-            "yr": (yd + self.iconTs / 2 if (yd + self.iconTs / 2) >= self.miniSize else self.miniSize,
-                   yd+self.iconSize-self.iconTs/2)}
-        print("start: ", self.iconRange['start'])
+        self.iconRange[self.icon_sq[1]] = {
+            "xr": (self.sizeWidth - xd - self.iconSize + self.iconRevise, self.sizeWidth - xd),
+            "yr": (yd + self.iconRevise / 2 if (yd + self.iconRevise / 2) >= self.miniSize else self.miniSize,
+                   yd + self.iconSize - self.iconRevise / 2)}
+        # print(str(self.icon_sq[1]) + ": ", self.iconRange[self.icon_sq[1]])
 
-        self.image2 = tk.PhotoImage(file=PATH("static/stop.png"))
-        canvas.create_image(self.sizeWidth - self.iconSize / 2 - xd - self.iconSize,
-                            self.sizeHeight / 2, anchor='center',
-                            image=self.image2)
-        # self.iconRange['stop'] = {"xr": (38, 63), "yr": (6, 31)}
-        self.iconRange['stop'] = {"xr": (38, 63),
-                                  "yr": (yd + self.iconTs / 2, yd+self.iconSize-self.iconTs/2)}
+        self.image2 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[2])))
+        canvas.create_image(self.sizeWidth - 3*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[2]],
+                            self.sizeHeight / 2, anchor='center', image=self.image2)
+        self.iconRange[self.icon_sq[2]] = {"xr": (self.sizeWidth-2*(xd+self.iconSize)+self.iconRevise,
+                                                  self.sizeWidth-(2*xd+self.iconSize)-self.iconRevise),
+                                           "yr": (yd + self.iconRevise / 2,
+                                                  yd + self.iconSize - self.iconRevise / 2)}
 
-        self.image3 = tk.PhotoImage(file=PATH("static/kill.png"))
-        canvas.create_image(self.sizeWidth - self.iconSize / 2 - xd - self.iconSize * 2,
+        self.image3 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[3])))
+        canvas.create_image(self.sizeWidth - 5*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[3]],
                             self.sizeHeight / 2, anchor='center',
                             image=self.image3)
-        self.iconRange['kill'] = {"xr": (7, 30),
-                                  "yr": (yd + self.iconTs / 2, yd+self.iconSize-self.iconTs/2)}
+        self.iconRange[self.icon_sq[3]] = {"xr": (self.sizeWidth-3*(xd+self.iconSize)+self.iconRevise,
+                                                  self.sizeWidth-(3*xd+2*self.iconSize)-self.iconRevise),
+                                           "yr": (yd + self.iconRevise / 2,
+                                                  yd + self.iconSize - self.iconRevise / 2)}
 
         # self.image5 = tk.PhotoImage(file=PATH("static/mini.png"))
         # canvas.create_image(2, 0, anchor='nw', image=self.image5)

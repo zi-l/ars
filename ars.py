@@ -1,7 +1,7 @@
 import threading
-import multiprocessing
-from adb import adb
-from door import Door
+# import multiprocessing
+from app.adb import adb
+from app.door import Door
 
 
 def size():
