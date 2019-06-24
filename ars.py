@@ -10,8 +10,7 @@ def size():
     return srcsize if k >= 1 else ('350', str(int(float(srcsize[1])*k)))
 
 
-def run():
-    udid = adb.devices()[0]
+def run(udid):
     t1 = threading.Thread(target=adb.screening, kwargs=dict(size=size(), udid=udid, noborder=False))
     t1.start()
 
