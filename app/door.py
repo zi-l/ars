@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import font
+from tkinter import Canvas
 from tkinter import messagebox
 from tkinter import ttk
 import threading
@@ -35,19 +36,17 @@ class Door(object):
     iconRange = dict()
     listRange = dict()
 
-    def __init__(self, master=None, ui='canvas', func: dict = None):
+    def __init__(self, master=None, func: dict = None):
         self.func = func
-        self.devices = None
-        self.device = None
+        self.devices = []
+        # self.device = None
         self.root = tk.Tk() if not master else master
         self.root.resizable(0, 0)  # prevent from size changing
         self.root.geometry("{0}x{1}+{2}+100".format(
             self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
         self.canvas = tk.Canvas(self.root)
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
-        self.ui = ui
-        if self.ui == 'canvas':
-            self.create_canvas()
+        self.create_canvas()
 
     def remote(self, **kwargs):
         st = tk.Button(self.root, height=2, width=2, font=self.ft, **kwargs)
@@ -64,18 +63,19 @@ class Door(object):
     def create_canvas(self):
         self.root.overrideredirect(True)
         self.root.attributes("-alpha", 0.7)  # 窗口透明度30 %
-        # self.placedevices()
+        self.sizeHeight = (len(self.devices)+1)*self.sizeUnit
+        print('self.sizeHeight:', self.sizeHeight)
         self.canvas.configure(width=self.sizeWidth)
         self.canvas.configure(height=self.sizeHeight)
         self.canvas.configure(bg="black")
         self.canvas.configure(highlightthickness=0)
         self.attachImage(self.canvas)
         self.root.iconbitmap(PATH("static/handshake.ico"))  # placed here instead of __init__()
-        # self.dvl()
-        # self.canvas.create_window((10, 10), window=self.killall)
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
         self.canvas.bind("<Button-1>", self.onclick)
+        # self.canvas.addtag_all('all')
+        # self.canvas.bind("<Configure>", self.andoptions)
         if not self.devices:
             threading.Thread(target=self.get_devices).start()
 
@@ -127,13 +127,19 @@ class Door(object):
         # canvas.create_image(2, 0, anchor='nw', image=self.image5)
         # self.iconRange['mini'] = {"xr": (1, 11), "yr": (0, 4)}
 
-    def create_options(self):
-        self.sizeHeight = (len(self.devices)+1)*self.sizeUnit
-        self.canvas.configure(height=self.sizeHeight)
-        self.canvas.pack()
+    def andoptions(self):
+        self.devices = ['sdlf', 32]
+        self.create_canvas()
+        # self.canvas.config(width=self.sizeWidth, height=self.sizeHeight)
+        # self.canvas.config(height=self.sizeHeight * 3)
+        # self.canvas.scale('all', 0, 0, self.sizeWidth, self.sizeHeight)
+        # self.canvas.pack()
+        # self.canvas.create_text((0, 40), text=str(self.devices[0]), fill='orange')
+        # self.canvas.configure(height=self.sizeHeight)
+        # self.canvas.pack()
         for sq, device in enumerate(self.devices):
-            self.canvas.create_text((0, self.sizeUnit+self.sizeUnit*sq), text=str(device), anchor='w', fill='orange')
-            self.listRange[device] = (self.sizeUnit+self.sizeUnit*sq,  self.sizeUnit+self.sizeUnit*sq + self.sizeUnit)
+            self.canvas.create_text((10, self.sizeUnit+self.sizeUnit*sq), text=str(device), anchor='n', fill='orange')
+            # self.listRange[device] = (self.sizeUnit+self.sizeUnit*sq,  self.sizeUnit+self.sizeUnit*sq + self.sizeUnit)
 
     def placedevices(self):
         comvalue = tk.StringVar()
@@ -144,10 +150,6 @@ class Door(object):
         self.comboxlist.current(0)  # 选择第一个
         # self.comboxlist.bind("<<ComboboxSelected>>", adb.devices)
         self.comboxlist.pack()
-
-    def dvl(self):
-        self.ls = tk.Listbox(self.canvas, bg='black', width=10, height=10)
-        self.ls.pack()
 
     def move(self, event):
         self.root.overrideredirect(True)
@@ -160,8 +162,8 @@ class Door(object):
         # print("event.x, event.y = ", event.x, event.y)
         if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
                 self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
-                self.create_options()
-                self.func["start"]()
+            self.andoptions()
+            # self.func["start"]()
         elif self.iconRange['stop']['xr'][0] <= self.x <= self.iconRange['stop']['xr'][1] and \
                 self.iconRange['stop']['yr'][0] <= self.y <= self.iconRange['stop']['yr'][1]:
             if serv().alive(FFPLAY):
