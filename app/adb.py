@@ -22,6 +22,7 @@ class adb(object):
     @staticmethod
     @msgbx
     def screening(size=("320", "480"), udid=None, noborder=False):
+        # print('udid: ', udid)
         adbcmd = "adb {0} exec-out \"while true;do screenrecord --bit-rate=16m  --output-format=h264 - ;done\" | ".format(
             "-s " + udid if udid else "")
         playcmd = "ffplay -framerate 60 -framedrop -noinfbuf -analyzeduration 40000 -probesize 300000 " \
@@ -79,3 +80,13 @@ class adb(object):
                 adb.androidVersion(udid if udid else None).split(".")[0]) >= 8 else "mFocusedActivity")
         pkat = os.popen(adbcmd).readline().split()[-2].split("/")
         return pkat[0], pkat[1]
+
+    @staticmethod
+    def nameUdid():
+        devices = {}
+        try:
+            for ud in adb.devices():
+                devices[adb.modelName(ud)] = ud
+            return devices
+        except:
+            return devices
