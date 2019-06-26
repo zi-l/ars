@@ -48,7 +48,7 @@ class Door(object):
         self.udid = []
         self.selected = {}
         self.mssg = []
-        self.threads = []
+        # self.threads = []
 
     def init_canvas(self):
         self.root.overrideredirect(True)
@@ -66,9 +66,8 @@ class Door(object):
         icon_amount = len(self.icon_sq.keys())/2
         # distance between each icon
         xd = (self.sizeWidth - self.iconSize * icon_amount) / (icon_amount + 1)
-        # yd = (self.sizeHeight - self.iconSize) / 2  # distance to the top
-        yd = 4  # distance to the top
-        # print(PATH("static/close.png"))
+        # distance to the top
+        yd = 4
         self.imageClose = tk.PhotoImage(file=PATH("static/close.png"))
         canvas.create_image(self.sizeWidth, 0, anchor='ne', image=self.imageClose)
         self.iconRange['close'] = {"xr": (self.sizeWidth - self.miniSize + 1, self.sizeWidth),
@@ -156,14 +155,12 @@ class Door(object):
                     v[1], text=str(k) if len(str(k)) <= txt_limit + 1 else str(k)[:txt_limit] + "...",
                     anchor='w', fill='green' if self.selected[k] else 'orange', justify=LEFT)
                 self.canvas.update()
-                # dr.root.update()
                 if self.selected[k]:
                     if self.devices[k] not in self.udid:
                         self.udid.append(self.devices[k])
                 else:
                     if self.devices[k] in self.udid:
                         self.udid.remove(self.devices[k])
-                print(self.udid)
                 break
 
     def move(self, event):

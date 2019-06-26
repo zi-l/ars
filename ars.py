@@ -17,14 +17,12 @@ def size(udid):
 
 def onclick(event):
     dr.x, dr.y = event.x, event.y
-    # print(dr.x, dr.y)
     if dr.listRange:
         dr.select()
     if dr.iconRange['start']['xr'][0] <= dr.x <= dr.iconRange['start']['xr'][1] and \
             dr.iconRange['start']['yr'][0] <= dr.y <= dr.iconRange['start']['yr'][1]:
         dr.cleanMsg()
         dr.detect()
-        dr.devices = {'sadlfoewfho': 232353523, 'UYOFHIOHIOFOH': 'oe8fhe98', 'sdfiyepvnwiue': 238720 - 238}
         if dr.devices:
             dr.cleanMsg()
             dr.options()

@@ -1,7 +1,5 @@
 import os
 import sys
-# import subprocess
-# from subprocess import check_output, call
 
 from config import msgbx, adb_required
 
@@ -18,7 +16,6 @@ class adb(object):
     @staticmethod
     @msgbx
     def screening(size=("320", "480"), udid=None, noborder=False):
-        # print('udid: ', udid)
         adbcmd = "adb {0} exec-out \"while true;do screenrecord --bit-rate=16m  --output-format=h264 - ;done\" | ".format(
             "-s " + udid if udid else "")
         playcmd = "ffplay -framerate 60 -framedrop -noinfbuf -analyzeduration 40000 -probesize 300000 " \
@@ -27,13 +24,7 @@ class adb(object):
                                                                               adb.modelName(udid))
 
         cmd = "cmd /c " + adbcmd + playcmd if sys.platform.startswith("win32") else adbcmd + playcmd
-        # print(cmd)
-        # call(cmd)
         os.popen(cmd)
-        # check_output(cmd)
-        # subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # co = check_output("cmd /c " + cmd)
-        # print(co.strip().decode())
         # if "Invalid data found when processing input" in co.strip().decode():
         #     messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")
         #     raise ConnectionAbortedError
