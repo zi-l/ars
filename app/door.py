@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import font, LEFT
 from tkinter import messagebox
-import threading
 
 from app.serv import serv
 from config import ADB, FFPLAY, PATH
@@ -19,13 +18,15 @@ class Door(object):
         "kill": 3,
     }
     onclickMsg = {
-        "start": "Start screening",
+        "detecting": "Detecting...",
+        "notConnected": "No device connected",
+        "notScreening": "No screening device",
         "stop": "Stop screening?",
         "kill": "All processes killed",
         "close": "Quit?",
 
     }
-    sizeWidth = 120
+    sizeWidth = 135
     sizeHeight = 40
     solidSize = 40
     textUnit = 25
@@ -42,17 +43,17 @@ class Door(object):
         # self.root.resizable(0, 0)  # prevent from size changing
         self.root.geometry("{0}x{1}+{2}+100".format(
             self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
+        self.root.wm_attributes('-topmost', True)  # 总是最前
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
         self.canvas = tk.Canvas(self.root)
         self.udid = []
-        self.selected = False
+        self.selected = {}
+        self.mssg = []
+        self.threads = []
 
-    def create_canvas(self):
+    def init_canvas(self):
         self.root.overrideredirect(True)
         self.root.attributes("-alpha", 0.7)  # 窗口透明度30 %
-        self.sizeHeight = self.solidSize + len(self.devices)*self.textUnit + 5 if len(self.devices) <= 1 else \
-            self.solidSize + len(self.devices)*self.textUnit
-        # print('self.sizeHeight:', self.sizeHeight)
         self.canvas.configure(width=self.sizeWidth)
         self.canvas.configure(height=self.sizeHeight)
         self.canvas.configure(bg="black")
@@ -82,7 +83,6 @@ class Door(object):
             "xr": (self.sizeWidth - xd - self.iconSize + self.iconRevise, self.sizeWidth - xd),
             "yr": (yd + self.iconRevise / 2 if (yd + self.iconRevise / 2) >= self.miniSize else self.miniSize,
                    yd + self.iconSize - self.iconRevise / 2)}
-        # print(str(self.icon_sq[1]) + ": ", self.iconRange[self.icon_sq[1]])
 
         self.image2 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[2])))
         canvas.create_image(self.sizeWidth - 3*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[2]],
@@ -109,7 +109,7 @@ class Door(object):
         self.sizeHeight = self.solidSize + len(self.devices) * self.textUnit + 5 if len(self.devices) <= 1 else \
             self.solidSize + len(self.devices) * self.textUnit
         self.root.geometry('{0}x{1}'.format(self.sizeWidth, self.sizeHeight))
-        self.create_canvas()
+        self.init_canvas()
         self.canvas.create_line(8, self.solidSize + 2, self.sizeWidth - 8, self.solidSize + 2, fill='green')
         space = (self.textUnit*len(self.devices) - 15)/float((len(self.devices)*3 - 1)/3)
         for ix, devName in enumerate(self.devices.keys()):
@@ -118,10 +118,36 @@ class Door(object):
                 (10, self.solidSize + 15 + space * ix),
                 text=str(devName) if len(str(devName)) <= txt_limit+1 else str(devName)[:txt_limit] + "...", anchor='w',
                 fill='orange', justify=LEFT)
+            self.mssg.append(tagId)
             self.listRange[devName] = [(self.solidSize + 10 + space * ix,
                                                      self.solidSize + 10 + space * ix + 10), tagId]
+            self.selected[devName] = False
         self.root.update()
         self.canvas.update()
+
+    def processing(self, message, fill='orange'):
+        self.sizeHeight = self.solidSize + self.textUnit + 5
+        self.root.geometry('{0}x{1}'.format(self.sizeWidth, self.sizeHeight))
+        self.init_canvas()
+        self.canvas.create_line(8, self.solidSize + 2, self.sizeWidth - 8, self.solidSize + 2, fill='green')
+        textId = self.canvas.create_text((6, self.solidSize + 15), text=message, anchor='w', fill=fill, justify=LEFT)
+        self.mssg.append(textId)
+        self.root.update()
+        self.canvas.update()
+        return textId
+
+    def cleanMsg(self):
+        for msg in self.mssg:
+            self.canvas.delete(msg)
+        self.root.update()
+        self.canvas.update()
+
+    def detect(self):
+        self.processing(message=self.onclickMsg['detecting'])
+        self.devices = adb.nameUdid()
+        if not self.devices:
+            self.canvas.delete(self.mssg[-1])
+            self.processing(message=self.onclickMsg['notConnected'])
 
     def move(self, event):
         self.root.overrideredirect(True)
@@ -135,28 +161,29 @@ class Door(object):
         if self.listRange:
             for k, v in self.listRange.items():
                 if v[0][0] <= self.y <= v[0][1]:
-                    self.selected = True if not self.selected else False
+                    self.selected[k] = True if not self.selected[k] else False
                     txt_limit = 13 if str(k).isupper() else 15
                     self.canvas.itemconfigure(
                         v[1], text=str(k) if len(str(k)) <= txt_limit + 1 else str(k)[:txt_limit] + "...",
-                        anchor='w', fill='green' if self.selected else 'orange', justify=LEFT)
+                        anchor='w', fill='green' if self.selected[k] else 'orange', justify=LEFT)
                     self.canvas.update()
-                    self.root.update()
-                    if self.selected:
+                    # self.root.update()
+                    if self.selected[k]:
                         if self.devices[k] not in self.udid:
                             self.udid.append(self.devices[k])
                     else:
                         if self.devices[k] in self.udid:
                             self.udid.remove(self.devices[k])
+                    print(self.udid)
                     break
         if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
                 self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
-            if not self.devices:
-                messagebox.showinfo(title='Ars', message='Searching')
-                self.devices = adb.nameUdid()
+            self.cleanMsg()
+            self.detect()
+            if self.devices:
+                self.cleanMsg()
                 self.options()
             if self.selected:
-                # threading.Thread(target=self.func['start'], args=self.udid).start()
                 for ud in self.udid:
                     self.func["start"](ud)
 
@@ -166,20 +193,18 @@ class Door(object):
                 if messagebox.askquestion(title="Ars", message=self.onclickMsg['stop']).lower() == 'yes':
                     serv(FFPLAY).stop()
             else:
-                messagebox.showinfo(title="Ars", message="No Screening ")
+                self.cleanMsg()
+                self.processing(message=self.onclickMsg['notScreening'])
+
         elif self.iconRange['kill']['xr'][0] <= self.x <= self.iconRange['kill']['xr'][1] and \
                 self.iconRange['kill']['yr'][0] <= self.y <= self.iconRange['kill']['yr'][1]:
             serv(FFPLAY, ADB).stop()
-            messagebox.showinfo(title="Ars", message=self.onclickMsg['kill'])
+            self.cleanMsg()
+            self.processing(message=self.onclickMsg['kill'])
         elif self.iconRange['close']['xr'][0] <= self.x <= self.iconRange['close']['xr'][1] and \
                 self.iconRange['close']['yr'][0] <= self.y <= self.iconRange['close']['yr'][1]:
             if messagebox.askquestion(title="Ars", message=self.onclickMsg['close']).lower() == 'yes':
                 self.close()
-        # elif self.iconRange['mini']['xr'][0] <= self.x <= self.iconRange['mini']['xr'][1] and \
-        #         self.iconRange['mini']['yr'][0] <= self.y <= self.iconRange['mini']['yr'][1]:
-        #     self.root.overrideredirect(False)
-        #     self.root.iconify()
-        #     self.root.overrideredirect(True)
 
     def close(self):
         serv(ADB, FFPLAY).stop()
