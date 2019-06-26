@@ -2,7 +2,6 @@ import os
 import sys
 # import subprocess
 # from subprocess import check_output, call
-from tkinter import messagebox
 
 from config import msgbx, adb_required
 
@@ -14,9 +13,6 @@ class adb(object):
     def devices():
         lines = os.popen("adb devices").readlines()
         devs = [line.split()[0] for line in lines if len(line.split()) == 2]
-        if not devs:
-            messagebox.showerror(title="Error", message="No device connected or authorized")
-            raise ConnectionError
         return devs
 
     @staticmethod
@@ -43,11 +39,13 @@ class adb(object):
         #     raise ConnectionAbortedError
 
     @staticmethod
+    @msgbx
     def modelName(udid=None):
         return os.popen(
             "adb {0} shell getprop ro.product.model".format(" -s " + udid if udid else "")).readline().strip()
 
     @staticmethod
+    @msgbx
     def screenSize(udid=None):
         """
         :return: 1080,1920 e.g.
@@ -57,6 +55,7 @@ class adb(object):
         return density.split("x")[0], density.split("x")[1]
 
     @staticmethod
+    @msgbx
     def ip(udid=None):
         """
         :return: ip address
@@ -65,11 +64,13 @@ class adb(object):
             " -s " + udid if udid else "")).readline().split()[0].split(":")[-1]
 
     @staticmethod
+    @msgbx
     def androidVersion(udid=None):
         return os.popen(
             "adb {0} shell getprop ro.build.version.release".format(" -s " + udid if udid else "")).readline().strip()
 
     @staticmethod
+    @msgbx
     def packageActivity(udid=None):
         """
         :return: appPackage, appActivity

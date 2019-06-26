@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import font, LEFT
-from tkinter import messagebox
 
 from app.serv import serv
 from config import ADB, FFPLAY, PATH
@@ -62,7 +61,6 @@ class Door(object):
         self.root.iconbitmap(PATH("static/handshake.ico"))  # placed here instead of __init__()
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
-        self.canvas.bind("<Button-1>", self.onclick)
 
     def attachImage(self, canvas):
         icon_amount = len(self.icon_sq.keys())/2
@@ -149,62 +147,30 @@ class Door(object):
             self.canvas.delete(self.mssg[-1])
             self.processing(message=self.onclickMsg['notConnected'])
 
+    def select(self):
+        for k, v in self.listRange.items():
+            if v[0][0] <= self.y <= v[0][1]:
+                self.selected[k] = True if not self.selected[k] else False
+                txt_limit = 13 if str(k).isupper() else 15
+                self.canvas.itemconfigure(
+                    v[1], text=str(k) if len(str(k)) <= txt_limit + 1 else str(k)[:txt_limit] + "...",
+                    anchor='w', fill='green' if self.selected[k] else 'orange', justify=LEFT)
+                self.canvas.update()
+                # dr.root.update()
+                if self.selected[k]:
+                    if self.devices[k] not in self.udid:
+                        self.udid.append(self.devices[k])
+                else:
+                    if self.devices[k] in self.udid:
+                        self.udid.remove(self.devices[k])
+                print(self.udid)
+                break
+
     def move(self, event):
         self.root.overrideredirect(True)
         new_x = (event.x - self.x) + self.root.winfo_x()
         new_y = (event.y - self.y) + self.root.winfo_y()
         self.root.geometry("{0}x{1}+".format(self.sizeWidth, self.sizeHeight) + str(new_x) + "+" + str(new_y))
-
-    def onclick(self, event):
-        self.x, self.y = event.x, event.y
-        # print(self.x, self.y)
-        if self.listRange:
-            for k, v in self.listRange.items():
-                if v[0][0] <= self.y <= v[0][1]:
-                    self.selected[k] = True if not self.selected[k] else False
-                    txt_limit = 13 if str(k).isupper() else 15
-                    self.canvas.itemconfigure(
-                        v[1], text=str(k) if len(str(k)) <= txt_limit + 1 else str(k)[:txt_limit] + "...",
-                        anchor='w', fill='green' if self.selected[k] else 'orange', justify=LEFT)
-                    self.canvas.update()
-                    # self.root.update()
-                    if self.selected[k]:
-                        if self.devices[k] not in self.udid:
-                            self.udid.append(self.devices[k])
-                    else:
-                        if self.devices[k] in self.udid:
-                            self.udid.remove(self.devices[k])
-                    print(self.udid)
-                    break
-        if self.iconRange['start']['xr'][0] <= self.x <= self.iconRange['start']['xr'][1] and \
-                self.iconRange['start']['yr'][0] <= self.y <= self.iconRange['start']['yr'][1]:
-            self.cleanMsg()
-            self.detect()
-            if self.devices:
-                self.cleanMsg()
-                self.options()
-            if self.selected:
-                for ud in self.udid:
-                    self.func["start"](ud)
-
-        elif self.iconRange['stop']['xr'][0] <= self.x <= self.iconRange['stop']['xr'][1] and \
-                self.iconRange['stop']['yr'][0] <= self.y <= self.iconRange['stop']['yr'][1]:
-            if serv().alive(FFPLAY):
-                if messagebox.askquestion(title="Ars", message=self.onclickMsg['stop']).lower() == 'yes':
-                    serv(FFPLAY).stop()
-            else:
-                self.cleanMsg()
-                self.processing(message=self.onclickMsg['notScreening'])
-
-        elif self.iconRange['kill']['xr'][0] <= self.x <= self.iconRange['kill']['xr'][1] and \
-                self.iconRange['kill']['yr'][0] <= self.y <= self.iconRange['kill']['yr'][1]:
-            serv(FFPLAY, ADB).stop()
-            self.cleanMsg()
-            self.processing(message=self.onclickMsg['kill'])
-        elif self.iconRange['close']['xr'][0] <= self.x <= self.iconRange['close']['xr'][1] and \
-                self.iconRange['close']['yr'][0] <= self.y <= self.iconRange['close']['yr'][1]:
-            if messagebox.askquestion(title="Ars", message=self.onclickMsg['close']).lower() == 'yes':
-                self.close()
 
     def close(self):
         serv(ADB, FFPLAY).stop()
