@@ -16,6 +16,8 @@ There's three buttons on the widget.
 
 [![select](https://github.com/zi-l/ars/blob/master/docs/image/select.png)](https://github.com/zi-l/ars/blob/master/docs/image/select.png)
 
+[![screening](https://github.com/zi-l/ars/blob/master/docs/image/screening.png)](https://github.com/zi-l/ars/blob/master/docs/image/screening.png)
+
 ## Limitation
 - Ars only support screening via USB connection. WIFI screening is not being implemented so far.
 - Ars only screening android device, it's not possible to control android device through screening.
