@@ -15,20 +15,29 @@ def size(udid):
     return srcsize if k >= 1 else ('350', str(int(float(srcsize[1])*k)))
 
 
+def run():
+    if True not in dr.selected.values():
+        dr.cleanMsg()
+        dr.detect()
+    if dr.devices:
+        dr.cleanMsg()
+        dr.options()
+    for ud in dr.udid:
+        t = threading.Thread(
+            target=adb.screening,
+            kwargs=dict(size=size(str(ud)), udid=str(ud), noborder=False)
+        )
+        t.start()
+    dr.udid.clear()
+
+
 def onclick(event):
     dr.x, dr.y = event.x, event.y
     if dr.listRange:
         dr.select()
     if dr.iconRange['start']['xr'][0] <= dr.x <= dr.iconRange['start']['xr'][1] and \
             dr.iconRange['start']['yr'][0] <= dr.y <= dr.iconRange['start']['yr'][1]:
-        dr.cleanMsg()
-        dr.detect()
-        if dr.devices:
-            dr.cleanMsg()
-            dr.options()
-        if dr.selected:
-            for ud in dr.udid:
-                threading.Thread(target=adb.screening, kwargs=dict(size=size(str(ud)), udid=str(ud), noborder=False)).start()
+        threading.Thread(target=run).start()
 
     elif dr.iconRange['stop']['xr'][0] <= dr.x <= dr.iconRange['stop']['xr'][1] and \
             dr.iconRange['stop']['yr'][0] <= dr.y <= dr.iconRange['stop']['yr'][1]:

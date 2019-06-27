@@ -48,7 +48,7 @@ class Door(object):
         self.udid = []
         self.selected = {}
         self.mssg = []
-        # self.threads = []
+        # self.threads = {}
 
     def init_canvas(self):
         self.root.overrideredirect(True)
@@ -117,7 +117,7 @@ class Door(object):
                 fill='orange', justify=LEFT)
             self.mssg.append(tagId)
             self.listRange[devName] = [(self.solidSize + 10 + space * ix,
-                                                     self.solidSize + 10 + space * ix + 10), tagId]
+                                        self.solidSize + 10 + space * ix + 10), tagId]
             self.selected[devName] = False
         self.root.update()
         self.canvas.update()
@@ -136,7 +136,7 @@ class Door(object):
     def cleanMsg(self):
         for msg in self.mssg:
             self.canvas.delete(msg)
-        self.root.update()
+        # self.root.update()
         self.canvas.update()
 
     def detect(self):
@@ -156,10 +156,10 @@ class Door(object):
                     anchor='w', fill='green' if self.selected[k] else 'orange', justify=LEFT)
                 self.canvas.update()
                 if self.selected[k]:
-                    if self.devices[k] not in self.udid:
+                    if self.devices.get(k) and self.devices[k] not in self.udid:
                         self.udid.append(self.devices[k])
                 else:
-                    if self.devices[k] in self.udid:
+                    if self.devices.get(k) in self.udid:
                         self.udid.remove(self.devices[k])
                 break
 
