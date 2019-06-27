@@ -8,9 +8,9 @@ Ars is a tool screening android devices via [adb](https://developer.android.com/
 ## Manual
 There's three buttons on the widget.
 
-- `Start` button on the right side. Click to detect connected devices or start screening when some of device selected
-- `Stop` button in the middle. Click to stop all screening
-- `Kill` button on the left side. Click to kill adb and ffplay processes
+- `Start` button on the right side. Click to detect connected devices or start screening once some of devices selected.
+- `Stop` button in the middle. Click to stop all screening.
+- `Kill` button on the left side. Click to kill adb and ffplay processes.
 
 [![ars](https://github.com/zi-l/ars/blob/master/docs/image/ars.png)](https://github.com/zi-l/ars/blob/master/docs/image/ars.png)
 
