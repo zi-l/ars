@@ -1,7 +1,5 @@
 import os
-import sys
-
-from config import msgbx, adb_required
+from config import msgbx, adb_required, OS
 
 
 class adb(object):
@@ -23,7 +21,7 @@ class adb(object):
                                                                               "-noborder" if noborder else "",
                                                                               adb.modelName(udid))
 
-        cmd = "cmd /c " + adbcmd + playcmd if sys.platform.startswith("win32") else adbcmd + playcmd
+        cmd = "cmd /c " + adbcmd + playcmd if OS.startswith("win") else adbcmd + playcmd
         os.popen(cmd)
         # if "Invalid data found when processing input" in co.strip().decode():
         #     messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")

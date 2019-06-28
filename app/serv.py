@@ -1,5 +1,5 @@
 import os
-from config import msgbx
+from config import msgbx, OS
 
 
 class serv(object):
@@ -9,12 +9,14 @@ class serv(object):
 
     @msgbx
     def alive(self, prog):
-        return True if os.popen(
-            "tasklist | findstr \"{0}\"".format(prog)).readline() else False
+        cmd = "tasklist | findstr" if OS.startswith("win") else "ps ax|grep"
+        result = os.popen("{0} \"{1}\"".format(cmd, prog)).readline()
+        return True if result and not str(result.strip()).endswith(prog) else False
 
     @msgbx
     def stop(self, *prog):
         if prog:
             self.program = prog
+        cmd = "taskkill /f /im" if OS.startswith("win") else "killall -2"
         for p in self.program:
-            os.popen("taskkill /f /im {0}".format(p))
+            os.popen("{0} {1}".format(cmd, p))

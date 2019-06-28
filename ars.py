@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
 import threading
 # import multiprocessing
 from app.adb import adb

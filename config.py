@@ -1,10 +1,12 @@
 import os
+import sys
 from tkinter import messagebox
 from functools import wraps
 
 PATH = lambda p: os.path.abspath(os.path.join(os.path.dirname(__file__), p))
-FFPLAY = "ffplay.exe"
-ADB = "adb.exe"
+OS = sys.platform
+FFPLAY = "ffplay{0}".format(".exe" if OS.startswith('win') else "")
+ADB = "adb{0}".format(".exe" if OS.startswith('win') else "")
 
 
 def msgbx(func):
