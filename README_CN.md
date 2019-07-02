@@ -4,12 +4,12 @@
 
 - [English](https://github.com/zi-l/ars/blob/master/README.md)
 
-Ars是一个通过[adb](https://developer.android.com/studio/command-line/adb)和[ffplay](https://ffmpeg.org/ffplay.html) （一个[ffmpeg](https://github.com/FFmpeg/FFmpeg)的极简多媒体播放器子工具）对安卓设备进行投屏的工具.
+Ars是一个通过[adb](https://developer.android.com/studio/command-line/adb)和[ffplay](https://ffmpeg.org/ffplay.html)（一个[ffmpeg](https://github.com/FFmpeg/FFmpeg)的极简多媒体播放器子工具）对安卓设备进行投屏的工具。
 
 
 ### 依赖
 - [adb](https://developer.android.com/studio/command-line/adb)
-- [ffplay](https://ffmpeg.org/ffplay.html) （参考[ffmpeg](https://github.com/FFmpeg/FFmpeg)）
+- [ffplay](https://ffmpeg.org/ffplay.html)（参考[ffmpeg](https://github.com/FFmpeg/FFmpeg)）
 
 ### 用户指南
 
