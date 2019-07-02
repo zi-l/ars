@@ -23,10 +23,10 @@ Ars是一个通过[adb](https://developer.android.com/studio/command-line/adb)�
 - `Stop` 按钮位于中间。点击关闭所有投屏，但保留adb进程。
 - `Kill` 按钮位于最左侧。点击杀死所有adb和ffplay进程。
 
-##### 初始界面
+*初始界面*
 [![ars](https://github.com/zi-l/ars/blob/master/docs/image/ars.png)](https://github.com/zi-l/ars/blob/master/docs/image/ars.png)
 
-##### 选择设备进行投屏
+*选择设备进行投屏*
 [![select](https://github.com/zi-l/ars/blob/master/docs/image/select.png)](https://github.com/zi-l/ars/blob/master/docs/image/select.png)
 
 
