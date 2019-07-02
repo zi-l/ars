@@ -23,10 +23,12 @@ There's three buttons on the widget.
 - `Stop` button in the middle. Click to stop all screening but adb process.
 - `Kill` button on the left side. Click to kill adb and ffplay processes.
 
-##### Initial layout
+*Initial layout*
+
 [![ars](https://github.com/zi-l/ars/blob/master/docs/image/ars.png)](https://github.com/zi-l/ars/blob/master/docs/image/ars.png)
 
-##### Select(green one) to start
+*Select(green one) to start*
+
 [![select](https://github.com/zi-l/ars/blob/master/docs/image/select.png)](https://github.com/zi-l/ars/blob/master/docs/image/select.png)
 
 
