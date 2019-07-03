@@ -35,3 +35,7 @@ There's three buttons on the widget.
 ### Limitation
 - Ars only support screening via USB connection. WIFI screening is not being implemented so far.
 - Ars only screening android device, it's not possible to control android device through screening.
+
+### Copyright
+- The icons used by Ars come from [Iconfont](https://www.iconfont.cn/), thence consent of the author is required when Ars is used for commercial purposes.
+- Ars relies on adb and ffmpeg, make sure you are fully comprehending the licenses of them.
