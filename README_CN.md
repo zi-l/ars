@@ -35,3 +35,7 @@ Ars是一个通过[adb](https://developer.android.com/studio/command-line/adb)�
 ### 局限
 - Ars目前仅支持通过USB连接进行投屏，WIFI连接尚不支持。
 - Ars仅仅是对安卓屏幕进行投影，无法通过投屏操控安卓设备。
+
+### 版权
+- Ars使用的图标来源于[Iconfont](https://www.iconfont.cn/)（阿里巴巴矢量图标库），如用于商业用途，需要征得图标作者的同意。
+- Ars依赖于adb和ffmpeg，请确保已经充分了解两者的license。
