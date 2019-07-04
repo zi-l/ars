@@ -1,6 +1,6 @@
 # Ars
 [![license](https://img.shields.io/github/license/zi-l/ars.svg?style=for-the-badge)](https://github.com/zi-l/ars/blob/master/LICENSE)
-[![release](https://img.shields.io/github/downloads/zi-l/ars/total.svg?color=green&style=for-the-badge)](https://github.com/zi-l/ars/releases)
+[![release](https://img.shields.io/github/downloads/zi-l/ars/total.svg?color=green&label=download&style=for-the-badge)](https://github.com/zi-l/ars/releases)
 
 - [中文](https://github.com/zi-l/ars/blob/master/README_CN.md)
 
