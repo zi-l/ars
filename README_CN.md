@@ -1,6 +1,6 @@
 # Ars
 [![license](https://img.shields.io/github/license/zi-l/ars.svg?style=for-the-badge)](https://github.com/zi-l/ars/blob/master/LICENSE)
-[![release](https://img.shields.io/github/downloads/zi-l/ars/total.svg?color=green&style=for-the-badge)](https://github.com/zi-l/ars/releases)
+[![release](https://img.shields.io/github/downloads/zi-l/ars/total.svg?color=green&label=download&style=for-the-badge)](https://github.com/zi-l/ars/releases)
 
 - [English](https://github.com/zi-l/ars/blob/master/README.md)
 
@@ -38,4 +38,4 @@ Ars是一个通过[adb](https://developer.android.com/studio/command-line/adb)�
 
 ### 版权
 - Ars使用的图标来源于[Iconfont](https://www.iconfont.cn/)（阿里巴巴矢量图标库），如用于商业用途，需要征得图标作者的同意。
-- Ars依赖于adb和ffmpeg，请确保已经充分了解两者的license。
+- Ars依赖于adb和ffmpeg，请确保已经充分了解两者的许可证。
