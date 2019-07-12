@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import font, LEFT
 
 from app.serv import serv
-from config import ADB, FFPLAY, PATH
+from config import ADB, FFPLAY, PATH, OS
 from app.adb import adb
 
 
@@ -68,12 +68,12 @@ class Door(object):
         xd = (self.sizeWidth - self.iconSize * icon_amount) / (icon_amount + 1)
         # distance to the top
         yd = 4
-        self.imageClose = tk.PhotoImage(file=PATH("static/close.png"))
+        self.imageClose = tk.PhotoImage(file=PATH("static/close{0}".format(".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth, 0, anchor='ne', image=self.imageClose)
         self.iconRange['close'] = {"xr": (self.sizeWidth - self.miniSize + 1, self.sizeWidth),
                                    "yr": (0, self.miniSize - 1)}
 
-        self.image1 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[1])))
+        self.image1 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[1], ".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth - self.iconSize/2 - xd*self.icon_sq[self.icon_sq[1]],
                             yd+self.iconSize/2, anchor='center', image=self.image1)
         self.iconRange[self.icon_sq[1]] = {
@@ -81,7 +81,7 @@ class Door(object):
             "yr": (yd + self.iconRevise / 2 if (yd + self.iconRevise / 2) >= self.miniSize else self.miniSize,
                    yd + self.iconSize - self.iconRevise / 2)}
 
-        self.image2 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[2])))
+        self.image2 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[2], ".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth - 3*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[2]],
                             yd+self.iconSize/2, anchor='center', image=self.image2)
         self.iconRange[self.icon_sq[2]] = {"xr": (self.sizeWidth-2*(xd+self.iconSize)+self.iconRevise,
@@ -89,7 +89,7 @@ class Door(object):
                                            "yr": (yd + self.iconRevise / 2,
                                                   yd + self.iconSize - self.iconRevise / 2)}
 
-        self.image3 = tk.PhotoImage(file=PATH("static/{0}.png".format(self.icon_sq[3])))
+        self.image3 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[3], ".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth - 5*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[3]],
                             yd+self.iconSize/2, anchor='center',
                             image=self.image3)
@@ -98,7 +98,7 @@ class Door(object):
                                            "yr": (yd + self.iconRevise / 2,
                                                   yd + self.iconSize - self.iconRevise / 2)}
 
-        # self.image5 = tk.PhotoImage(file=PATH("static/mini.png"))
+        # self.image5 = tk.PhotoImage(file=PATH("static/mini.gif"))
         # canvas.create_image(2, 0, anchor='nw', image=self.image5)
         # self.iconRange['mini'] = {"xr": (1, 11), "yr": (0, 4)}
 

@@ -10,7 +10,7 @@ class serv(object):
     @msgbx
     def alive(self, prog):
         cmd = "tasklist | findstr" if OS.startswith("win") else "ps ax|grep"
-        result = os.popen("{0} \"{1}\"".format(cmd, prog)).readline()
+        result = os.popen("{0} {1}".format(cmd, prog)).readline()
         return True if result and not str(result.strip()).endswith(prog) else False
 
     @msgbx
