@@ -58,7 +58,9 @@ class Door(object):
         self.canvas.configure(bg="black")
         self.canvas.configure(highlightthickness=0)
         self.attachImage(self.canvas)
-        self.root.iconbitmap(PATH("static/handshake.ico"))  # placed here instead of __init__()
+        self.img = tk.PhotoImage(file=PATH("static/kill.gif"))
+        self.root.tk.call("wm", "iconphoto", self.root._w, self.img)
+       # self.root.iconbitmap(PATH("static/handshake.gif"))  # placed here instead of __init__()
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
 
