@@ -19,13 +19,13 @@ class Door(object):
     onclickMsg = {
         "detecting": "Detecting...",
         "notConnected": "No device connected",
-        "notScreening": "No screening device",
-        "stop": "Stop screening?",
-        "kill": "All processes killed",
+        "notScreening": "No device screening",
+        "stop": "Stop all screening?",
+        "kill": "Processes killed",
         "close": "Quit?",
 
     }
-    sizeWidth = 135
+    sizeWidth = 140
     sizeHeight = 40
     solidSize = 40
     textUnit = 25
@@ -35,14 +35,14 @@ class Door(object):
     iconRange = {}
     listRange = {}
 
-    def __init__(self, master=None, func: dict = None):
-        self.func = func
+    def __init__(self, master=None):
         self.devices = {}
         self.root = tk.Tk() if not master else master
         # self.root.resizable(0, 0)  # prevent from size changing
         self.root.geometry("{0}x{1}+{2}+100".format(
             self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
-        self.root.wm_attributes('-topmost', True)  # 总是最前
+        # self.root.wm_attributes('-topmost', True)  # 总是最前, ineffective in mac
+        self.root.call("wm", "attributes", ".", "-topmost", "true")  # 总是最前
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
         self.canvas = tk.Canvas(self.root)
         self.udid = []
@@ -53,14 +53,10 @@ class Door(object):
     def init_canvas(self):
         self.root.overrideredirect(True)
         self.root.attributes("-alpha", 0.7)  # 窗口透明度30 %
-        self.canvas.configure(width=self.sizeWidth)
-        self.canvas.configure(height=self.sizeHeight)
-        self.canvas.configure(bg="black")
-        self.canvas.configure(highlightthickness=0)
+        self.canvas.configure(width=self.sizeWidth, height=self.sizeHeight, bg="black", highlightthickness=0)
         self.attachImage(self.canvas)
         self.img = tk.PhotoImage(file=PATH("static/handshake.gif"))
         self.root.tk.call("wm", "iconphoto", self.root._w, self.img)
-       # self.root.iconbitmap(PATH("static/handshake.gif"))  # placed here instead of __init__()
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
 
@@ -75,7 +71,8 @@ class Door(object):
         self.iconRange['close'] = {"xr": (self.sizeWidth - self.miniSize + 1, self.sizeWidth),
                                    "yr": (0, self.miniSize - 1)}
 
-        self.image1 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[1], ".png" if OS.startswith("win") else ".gif")))
+        self.image1 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[1],
+                                                                     ".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth - self.iconSize/2 - xd*self.icon_sq[self.icon_sq[1]],
                             yd+self.iconSize/2, anchor='center', image=self.image1)
         self.iconRange[self.icon_sq[1]] = {
@@ -83,7 +80,8 @@ class Door(object):
             "yr": (yd + self.iconRevise / 2 if (yd + self.iconRevise / 2) >= self.miniSize else self.miniSize,
                    yd + self.iconSize - self.iconRevise / 2)}
 
-        self.image2 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[2], ".png" if OS.startswith("win") else ".gif")))
+        self.image2 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[2],
+                                                                     ".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth - 3*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[2]],
                             yd+self.iconSize/2, anchor='center', image=self.image2)
         self.iconRange[self.icon_sq[2]] = {"xr": (self.sizeWidth-2*(xd+self.iconSize)+self.iconRevise,
@@ -91,7 +89,8 @@ class Door(object):
                                            "yr": (yd + self.iconRevise / 2,
                                                   yd + self.iconSize - self.iconRevise / 2)}
 
-        self.image3 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[3], ".png" if OS.startswith("win") else ".gif")))
+        self.image3 = tk.PhotoImage(file=PATH("static/{0}{1}".format(self.icon_sq[3],
+                                                                     ".png" if OS.startswith("win") else ".gif")))
         canvas.create_image(self.sizeWidth - 5*self.iconSize/2 - xd*self.icon_sq[self.icon_sq[3]],
                             yd+self.iconSize/2, anchor='center',
                             image=self.image3)

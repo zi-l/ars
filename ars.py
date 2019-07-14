@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
-import threading
+# import threading
 # import multiprocessing
 from app.adb import adb
 from app.door import Door
 from app.serv import serv
 from config import FFPLAY, ADB
 from tkinter import messagebox
+
 
 dr = Door()
 
@@ -25,11 +26,12 @@ def run():
         dr.cleanMsg()
         dr.options()
     for ud in dr.udid:
-        t = threading.Thread(
-            target=adb.screening,
-            kwargs=dict(size=size(str(ud)), udid=str(ud), noborder=False)
-        )
-        t.start()
+        # t = threading.Thread(
+        #     target=adb.screening,
+        #     kwargs=dict(size=size(str(ud)), udid=str(ud), noborder=False)
+        # )
+        # t.start()
+        dr.root.after(0, adb.screening, size(str(ud)), str(ud))
     dr.udid.clear()
 
 
@@ -39,7 +41,8 @@ def onclick(event):
         dr.select()
     if dr.iconRange['start']['xr'][0] <= dr.x <= dr.iconRange['start']['xr'][1] and \
             dr.iconRange['start']['yr'][0] <= dr.y <= dr.iconRange['start']['yr'][1]:
-        threading.Thread(target=run).start()
+        # threading.Thread(target=run).start()
+        dr.root.after(0, run)
 
     elif dr.iconRange['stop']['xr'][0] <= dr.x <= dr.iconRange['stop']['xr'][1] and \
             dr.iconRange['stop']['yr'][0] <= dr.y <= dr.iconRange['stop']['yr'][1]:
