@@ -41,7 +41,7 @@ class Door(object):
         # self.root.resizable(0, 0)  # prevent from size changing
         self.root.geometry("{0}x{1}+{2}+100".format(
             self.sizeWidth, self.sizeHeight, self.root.winfo_screenwidth() - self.sizeWidth - 200))
-        # self.root.wm_attributes('-topmost', True)  # 总是最前, ineffective in mac
+        # self.root.wm_attributes('-topmost', True)
         self.root.call("wm", "attributes", ".", "-topmost", "true")  # 总是最前
         self.ft = font.Font(name="Courier New", size=10, weight=font.BOLD)
         self.canvas = tk.Canvas(self.root)
@@ -57,6 +57,7 @@ class Door(object):
         self.attachImage(self.canvas)
         self.img = tk.PhotoImage(file=PATH("static/handshake.gif"))
         self.root.tk.call("wm", "iconphoto", self.root._w, self.img)
+        self.root.wm_attributes('-topmost', True)
         self.canvas.pack()
         self.canvas.bind("<B1-Motion>", self.move)
 
