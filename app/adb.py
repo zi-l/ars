@@ -1,8 +1,11 @@
 import os
+import subprocess
 from config import msgbx, adb_required, OS
 
 
 class adb(object):
+
+    fps = []
 
     @staticmethod
     @adb_required
@@ -20,9 +23,10 @@ class adb(object):
                   "-x {0} -y {1} -an {2} -window_title \"ARS: {3}\" -".format(size[0], size[1],
                                                                               "-noborder" if noborder else "",
                                                                               adb.modelName(udid))
-
         cmd = "cmd /c " + adbcmd + playcmd if OS.startswith("win") else adbcmd + playcmd
-        os.popen(cmd)
+        pros = subprocess.Popen(cmd, shell=True, start_new_session=True)
+        adb.fps.append(pros)
+        # os.popen(cmd)
         # if "Invalid data found when processing input" in co.strip().decode():
         #     messagebox.showerror(title="Error", message="Unexpected parameters or device disconnected")
         #     raise ConnectionAbortedError
@@ -80,3 +84,21 @@ class adb(object):
             return devices
         except:
             return devices
+
+    @staticmethod
+    @adb_required
+    def start_server():
+        os.popen('adb start-server')
+
+    @staticmethod
+    @adb_required
+    def kill_server():
+        os.popen('adb kill-server')
+
+    @staticmethod
+    def connect(url):
+        os.popen('adb connect {0}'.format(url))
+
+    @staticmethod
+    def disconnect(url):
+        os.popen('adb disconnect {0}'.format(url))
